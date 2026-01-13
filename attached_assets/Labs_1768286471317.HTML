@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelous Labs | The Anti-Failure Venture Partner</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- I. GLOBAL VARIABLES & RESET --- */
+        :root {
+            /* Palette */
+            --bg-foundation: #F9F9F9;   /* Architectural White */
+            --bg-obsidian: #0A0A0B;     /* Scale Universe Background */
+            --color-accent: #0057FF;    /* Blueprint Blue */
+            --color-text: #1A1A1A;      /* Deep Slate */
+            --color-cta: #00FF41;       /* Neon Green */
+            
+            /* Typography */
+            --font-head: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            
+            /* Layout */
+            --container-width: 1200px;
+            --spacing-section: 120px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-foundation);
+            color: var(--color-text);
+            font-family: var(--font-head);
+            line-height: 1.5;
+            transition: background-color 0.8s cubic-bezier(0.65, 0, 0.35, 1), color 0.5s ease;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* The "Scale" State (Triggered via JS) */
+        body.mode-scale {
+            background-color: var(--bg-obsidian);
+            color: white;
+        }
+        body.mode-scale .toggle-pill { border-color: #333; }
+        body.mode-scale .card { background: #111; border-color: #333; color: white; }
+
+        /* --- II. UTILITIES --- */
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .mono {
+            font-family: var(--font-mono);
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--color-accent);
+            color: white;
+            padding: 16px 32px;
+            font-family: var(--font-mono);
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid var(--color-accent);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: transparent;
+            color: var(--color-accent);
+            box-shadow: 4px 4px 0px rgba(0, 87, 255, 0.2);
+        }
+
+        /* --- III. HEADER & TOGGLE --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 24px 0;
+            z-index: 1000;
+            mix-blend-mode: difference; /* Ensures visibility on both white and black */
+        }
+
+        .nav-flex {
+            display: flex;
+            justify-content: flex-end; /* Right aligned */
+            align-items: center;
+        }
+
+        .toggle-pill {
+            display: flex;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #ddd;
+            border-radius: 100px;
+            padding: 4px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+
+        .toggle-opt {
+            padding: 8px 24px;
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-opt.active {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .toggle-opt.inactive {
+            color: #999;
+        }
+        
+        .toggle-opt.inactive:hover {
+            color: var(--color-accent);
+        }
+
+        /* --- IV. HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+
+        .sub-headline {
+            font-size: 1.25rem;
+            color: #555;
+            margin-bottom: 40px;
+            max-width: 90%;
+            font-weight: 400;
+        }
+
+        /* CSS Wireframe Engine (Placeholder for WebGL) */
+        .engine-container {
+            width: 100%;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        .wireframe-cube {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 10s infinite linear;
+        }
+
+        .face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 2px solid var(--color-accent);
+            opacity: 0.5;
+            background: rgba(0, 87, 255, 0.02);
+        }
+
+        .front  { transform: rotateY(0deg) translateZ(100px); }
+        .back   { transform: rotateY(180deg) translateZ(100px); }
+        .right  { transform: rotateY(90deg) translateZ(100px); }
+        .left   { transform: rotateY(-90deg) translateZ(100px); }
+        .top    { transform: rotateX(90deg) translateZ(100px); }
+        .bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+        @keyframes rotate {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        /* --- V. TIMELINE LEDGER --- */
+        .section-timeline {
+            padding: var(--spacing-section) 0;
+            position: relative;
+        }
+
+        .timeline-wrapper {
+            position: relative;
+            padding-left: 40px;
+            border-left: 1px solid rgba(0, 87, 255, 0.3);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 80px;
+            padding-left: 40px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -45px; /* Aligns with border */
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            background: var(--color-bg);
+            border: 2px solid var(--color-accent);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .timeline-date {
+            font-family: var(--font-mono);
+            color: var(--color-accent);
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .timeline-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .timeline-desc {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+        }
+
+        /* --- VI. ENGINEERING GRID --- */
+        .section-grid {
+            padding: var(--spacing-section) 0;
+            background: linear-gradient(to bottom, #F9F9F9, #F5F5F5);
+        }
+
+        .grid-header {
+            margin-bottom: 60px;
+        }
+
+        .three-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #E5E5E5;
+            padding: 40px;
+            height: 100%;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: crosshair;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin: 20px 0 16px 0;
+            font-weight: 700;
+        }
+
+        .card p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .icon-box {
+            font-family: var(--font-mono);
+            color: var(--color-accent);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        /* The Blueprint Overlay Effect */
+        .card:hover::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* 10px Grid Pattern */
+            background-image: 
+                linear-gradient(var(--color-accent) 0.5px, transparent 0.5px),
+                linear-gradient(90deg, var(--color-accent) 0.5px, transparent 0.5px);
+            background-size: 10px 10px;
+            opacity: 0.15;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            border-color: var(--color-accent);
+        }
+
+        /* --- VII. FILM STRIP (FOUNDER AWARENESS) --- */
+        .section-film {
+            padding: var(--spacing-section) 0;
+            overflow: hidden;
+        }
+
+        .film-scroll {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            padding-bottom: 20px;
+            overflow-x: auto;
+            scrollbar-width: none; /* Firefox */
+        }
+        .film-scroll::-webkit-scrollbar { display: none; } /* Chrome */
+
+        .film-frame {
+            min-width: 400px;
+            height: 250px;
+            background: #111;
+            border: 1px solid #333;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: var(--font-mono);
+        }
+
+        /* --- VIII. FINAL CTA --- */
+        .section-cta {
+            padding: 160px 0;
+            text-align: center;
+            background: white;
+            border-top: 1px solid #E5E5E5;
+        }
+
+        .cta-sub {
+            font-family: var(--font-mono);
+            color: var(--color-text);
+            margin-top: 24px;
+            font-size: 0.9rem;
+            display: block;
+        }
+        
+        .build-log-link {
+            display: inline-block;
+            margin-top: 32px;
+            color: var(--color-text);
+            font-family: var(--font-mono);
+            text-decoration: underline;
+            text-decoration-color: var(--color-accent);
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            .hero-grid, .three-col { grid-template-columns: 1fr; }
+            h1 { font-size: 3rem; }
+            .section-timeline { padding-left: 20px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-flex">
+            <div class="toggle-pill">
+                <div class="toggle-opt inactive" id="btn-scale" onclick="toggleMode('scale')">SCALE</div>
+                <div class="toggle-opt active" id="btn-build" onclick="toggleMode('build')">BUILD</div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <span class="mono">// PAGE 06: BUILD UNIVERSE</span>
+                <br><br>
+                <h1>The Anti-Failure<br>Venture Partner.</h1>
+                <p class="sub-headline">
+                    We don't just write code; we architect sovereign companies. From strategic PRD to your first 20 qualified leads—we build, operate, and staff your vision until you're ready to captain the ship.
+                </p>
+                <a href="#" class="btn">[ INITIATE 10-WEEK SPRINT ]</a>
+            </div>
+            
+            <div class="engine-container">
+                <div class="wireframe-cube">
+                    <div class="face front"></div>
+                    <div class="face back"></div>
+                    <div class="face right"></div>
+                    <div class="face left"></div>
+                    <div class="face top"></div>
+                    <div class="face bottom"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-timeline">
+        <div class="container">
+            <span class="mono" style="margin-bottom: 40px; display:block;">// THE CORE USP: EXECUTION PROTOCOL</span>
+            
+            <div class="timeline-wrapper">
+                
+                <div class="timeline-item">
+                    <span class="timeline-date">WEEK 01-02</span>
+                    <h3 class="timeline-title">Strategic PRD & Logic</h3>
+                    <p class="timeline-desc">We translate your vision into a technical Product Requirements Document (PRD) and core GTM logic. No ambiguity. Just engineering truth.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-date">WEEK 03-06</span>
+                    <h3 class="timeline-title">Engineering & Vibe Code</h3>
+                    <p class="timeline-desc">Rapid development of your MVP or full-scale Web App. We focus on "Cinematic Authority" and robust backend infrastructure.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-date">WEEK 07-09</span>
+                    <h3 class="timeline-title">GTM Activation & Leads</h3>
+                    <p class="timeline-desc">We deploy your first Managed GTM Pod to generate your first 20 qualified meetings and validate the market.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-date">WEEK 10</span>
+                    <h3 class="timeline-title">The Sovereign Handoff</h3>
+                    <p class="timeline-desc">We facilitate the transfer of all assets, documentation, and recruit your internal team to take the keys.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="section-grid">
+        <div class="container">
+            <div class="grid-header">
+                <h2>Full-Stack Engineering.</h2>
+                <span class="mono">HOVER TO INSPECT BLUEPRINTS</span>
+            </div>
+
+            <div class="three-col">
+                <div class="card">
+                    <div class="icon-box">&lt;/&gt;</div>
+                    <h3>Software & Product</h3>
+                    <p>Custom Web Apps, UI/UX Design, and mobile development powered by "Vibe Code" speed.</p>
+                    <br>
+                    <span class="mono">REACT / NEXT.JS / WEBGL</span>
+                </div>
+
+                <div class="card">
+                    <div class="icon-box">[ AI ]</div>
+                    <h3>Advanced Systems</h3>
+                    <p>AI/ML integration, custom LLM training, and Blockchain architecture.</p>
+                    <br>
+                    <span class="mono">PYTHON / TENSORFLOW / SOL</span>
+                </div>
+
+                <div class="card">
+                    <div class="icon-box">{ HW }</div>
+                    <h3>Physical Systems</h3>
+                    <p>Embedded Engineering, Cloud DevOps, and Hardware prototyping for physical ventures.</p>
+                    <br>
+                    <span class="mono">RUST / AWS / C++</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-film">
+        <div class="container">
+            <h2>The Awareness Moat</h2>
+            <p style="max-width: 600px; color: #666; margin-top: 10px;">Your code needs a face. We manage Founder Video Content to ensure your brand matches your technical excellence.</p>
+            
+            <div class="film-scroll">
+                <div class="film-frame">VIDEO ASSET 01</div>
+                <div class="film-frame">VIDEO ASSET 02</div>
+                <div class="film-frame">VIDEO ASSET 03</div>
+                <div class="film-frame">VIDEO ASSET 04</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-cta">
+        <div class="container">
+            <h1>Ready to Captain the Ship?</h1>
+            <br>
+            <a href="#" class="btn">[ INITIATE YOUR 10-WEEK SPRINT ]</a>
+            <span class="cta-sub">// INTELOUS LABS IS REVIEWING APPLICATIONS FOR Q1 2026.</span>
+            
+            <a href="#" class="build-log-link">[ View the Build Logs ]</a>
+        </div>
+    </section>
+
+    <script>
+        function toggleMode(mode) {
+            const body = document.body;
+            const btnBuild = document.getElementById('btn-build');
+            const btnScale = document.getElementById('btn-scale');
+
+            if (mode === 'scale') {
+                // Trigger Ink-Bleed
+                body.classList.add('mode-scale');
+                
+                // Toggle Buttons
+                btnBuild.classList.remove('active');
+                btnBuild.classList.add('inactive');
+                
+                btnScale.classList.add('active');
+                btnScale.classList.remove('inactive');
+
+                // Simulate Page Navigation after transition
+                setTimeout(() => {
+                    alert("Transition complete. Load Page 5 (Scale) content here.");
+                }, 800);
+            } else {
+                body.classList.remove('mode-scale');
+                 // Toggle Buttons
+                 btnScale.classList.remove('active');
+                 btnScale.classList.add('inactive');
+                 
+                 btnBuild.classList.add('active');
+                 btnBuild.classList.remove('inactive');
+            }
+        }
+    </script>
+</body>
+</html>

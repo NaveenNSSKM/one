@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelous Labs | Capability Matrix</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL VARIABLES --- */
+        :root {
+            --bg-foundation: #F9F9F9;
+            --color-accent: #0057FF;    /* Blueprint Blue */
+            --color-text: #1A1A1A;      /* Deep Slate */
+            --color-border: rgba(0, 87, 255, 0.25); 
+            --color-active: #00FF41;    /* Neon Green */
+            
+            --font-head: 'Inter', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            
+            --grid-gap: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-foundation);
+            color: var(--color-text);
+            font-family: var(--font-head);
+            /* Engineering Dot Grid Background */
+            background-image: radial-gradient(rgba(0, 87, 255, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- UTILITIES --- */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        .mono {
+            font-family: var(--font-mono);
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.8rem;
+        }
+
+        /* --- SWISS 12-COLUMN GRID --- */
+        .swiss-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--grid-gap);
+            margin-bottom: 120px;
+        }
+
+        /* Column Spans */
+        .span-12 { grid-column: span 12; }
+        .span-6  { grid-column: span 6; }
+        .span-4  { grid-column: span 4; }
+        .span-3  { grid-column: span 3; }
+
+        /* --- TYPOGRAPHY --- */
+        .section-head {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 20px;
+            background: var(--bg-foundation); /* Masks grid behind text */
+        }
+
+        .pillar-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* --- COMPONENT: SERVICE CARD (General) --- */
+        .service-block {
+            background: white;
+            border: 1px solid var(--color-border);
+            padding: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+            height: 100%;
+            cursor: crosshair; /* Interaction Physics */
+        }
+
+        /* Hover Physics: Engineering Active State */
+        .service-block:hover {
+            border-color: var(--color-accent);
+            box-shadow: 0 10px 30px rgba(0, 87, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Schema ID Tag (Top Right) */
+        .service-block::before {
+            content: attr(data-id);
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: #ccc;
+            transition: color 0.3s;
+        }
+
+        .service-block:hover::before { color: var(--color-accent); }
+
+        /* Hover Label (Dynamic) */
+        .service-block::after {
+            content: "INITIATING_SEQ...";
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--color-accent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .service-block:hover::after { opacity: 1; }
+
+        .block-head {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 20px 0 10px 0;
+        }
+
+        .block-desc {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* --- PILLAR 1: DIGITAL CORE (Bento) --- */
+        .img-placeholder {
+            width: 100%;
+            height: 180px;
+            background: #f0f0f0;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            background-image: linear-gradient(45deg, #f0f0f0 25%, #e9e9e9 25%, #e9e9e9 50%, #f0f0f0 50%, #f0f0f0 75%, #e9e9e9 75%, #e9e9e9 100%);
+            background-size: 20px 20px;
+        }
+
+        /* --- PILLAR 2: INFRASTRUCTURE (Data-Blades) --- */
+        .blade {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: #fff;
+            border: 1px solid var(--color-border);
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            cursor: crosshair;
+        }
+
+        .blade:hover {
+            border-left: 4px solid var(--color-accent);
+            background: #fafafa;
+        }
+
+        .blade-left { display: flex; align-items: center; gap: 20px; }
+        
+        .status-light {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--color-active);
+            box-shadow: 0 0 8px var(--color-active);
+        }
+
+        .blade-tech {
+            font-family: var(--font-mono);
+            color: var(--color-accent);
+            font-size: 0.85rem;
+            border: 1px solid var(--color-border);
+            padding: 4px 8px;
+        }
+
+        /* --- PILLAR 3: PHYSICAL MOAT (Schematic) --- */
+        .schematic-box {
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        .schematic-icon {
+            width: 80px;
+            height: 80px;
+            border: 1px solid var(--color-text);
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .service-block:hover .schematic-icon {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+            box-shadow: 0 0 15px rgba(0, 87, 255, 0.2);
+            text-shadow: 0 0 5px var(--color-accent);
+        }
+
+        /* --- PILLAR 4: STRATEGIC IDENTITY --- */
+        .cinema-tile {
+            height: 300px;
+            background-color: #111;
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+        }
+
+        .cinema-tile:hover {
+            border: 1px solid var(--color-accent);
+        }
+
+        .cinema-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.2));
+            z-index: 1;
+        }
+        
+        .cinema-content { z-index: 2; position: relative; }
+
+        /* --- CTA --- */
+        .footer-cta {
+            text-align: center;
+            padding: 100px 0;
+            background: white;
+            border: 1px solid var(--color-border);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--color-accent);
+            color: white;
+            padding: 20px 40px;
+            font-family: var(--font-mono);
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 30px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            box-shadow: 6px 6px 0 rgba(0, 87, 255, 0.2);
+            transform: translate(-2px, -2px);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .span-4, .span-6, .span-3 { grid-column: span 12; }
+            .blade { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .section-head { font-size: 2.5rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <h1 class="section-head">End-to-End<br>Technical Execution.</h1>
+
+        <div class="pillar-title">
+            <span class="mono">[ PILLAR 01 ]</span> DIGITAL CORE
+        </div>
+        <div class="swiss-grid">
+            
+            <div class="span-4 service-block" data-id="CORE-01">
+                <div class="img-placeholder">UI_PREVIEW_SYS.png</div>
+                <h3 class="block-head">Web & App Systems</h3>
+                <p class="block-desc">High-performance, AI-native platforms built using modern frameworks (Next.js/React) for non-linear scaling.</p>
+            </div>
+
+            <div class="span-4 service-block" data-id="CORE-02">
+                <div class="img-placeholder">WIREFRAME_V2.svg</div>
+                <h3 class="block-head">Architectural UI/UX</h3>
+                <p class="block-desc">Interfaces that prioritize user intent over decoration. We design for clarity, speed, and conversion.</p>
+            </div>
+
+            <div class="span-4 service-block" data-id="CORE-03">
+                <div class="img-placeholder">MVP_SPEED.exe</div>
+                <h3 class="block-head">Vibe Code & MVP</h3>
+                <p class="block-desc">High-speed prototyping. Move from "Strategic PRD" to a deployed product in the first 4 weeks.</p>
+            </div>
+        </div>
+
+
+        <div class="pillar-title">
+            <span class="mono">[ PILLAR 02 ]</span> DEEP ENGINEERING
+        </div>
+        <div class="swiss-grid" style="gap: 0;">
+            
+            <div class="span-12 blade">
+                <div class="blade-left">
+                    <div class="status-light"></div>
+                    <span class="mono">INFRA-01</span>
+                    <strong>Cloud & DevOps Architecture</strong>
+                </div>
+                <div class="blade-right">
+                    <span class="blade-tech">AWS</span>
+                    <span class="blade-tech">DOCKER</span>
+                    <span class="blade-tech">CI/CD</span>
+                </div>
+            </div>
+
+            <div class="span-12 blade">
+                <div class="blade-left">
+                    <div class="status-light"></div>
+                    <span class="mono">INFRA-02</span>
+                    <strong>Blockchain & Web3 Protocols</strong>
+                </div>
+                <div class="blade-right">
+                    <span class="blade-tech">SOLIDITY</span>
+                    <span class="blade-tech">RUST</span>
+                    <span class="blade-tech">IPFS</span>
+                </div>
+            </div>
+
+            <div class="span-12 blade">
+                <div class="blade-left">
+                    <div class="status-light"></div>
+                    <span class="mono">INFRA-03</span>
+                    <strong>AI Agents & Sentiment Pipelines</strong>
+                </div>
+                <div class="blade-right">
+                    <span class="blade-tech">PYTHON</span>
+                    <span class="blade-tech">LLM</span>
+                    <span class="blade-tech">LANGCHAIN</span>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="pillar-title" style="margin-top: 80px;">
+            <span class="mono">[ PILLAR 03 ]</span> THE PHYSICAL MOAT
+        </div>
+        <div class="swiss-grid">
+            
+            <div class="span-4 service-block schematic-box" data-id="HW-01">
+                <div class="schematic-icon">{ }</div>
+                <h3 class="block-head">Embedded Engineering</h3>
+                <p class="block-desc">Low-level code for the physical world. Seamless communication between hardware and your digital stack.</p>
+            </div>
+
+            <div class="span-4 service-block schematic-box" data-id="HW-02">
+                <div class="schematic-icon">PCB</div>
+                <h3 class="block-head">Hardware Prototyping</h3>
+                <p class="block-desc">From PCB design to 3D-printed enclosures and industrial engineering workflows.</p>
+            </div>
+
+            <div class="span-4 service-block schematic-box" data-id="HW-03">
+                <div class="schematic-icon">IoT</div>
+                <h3 class="block-head">IoT & Edge Computing</h3>
+                <p class="block-desc">Intelligent data processing at the physical source. Secure, scalable edge architecture.</p>
+            </div>
+
+        </div>
+
+
+        <div class="pillar-title">
+            <span class="mono">[ PILLAR 04 ]</span> STRATEGIC IDENTITY
+        </div>
+        <div class="swiss-grid">
+            
+            <div class="span-6 cinema-tile" data-id="ID-01">
+                <div class="cinema-bg"></div>
+                <div class="cinema-content">
+                    <span class="mono">AESTHETIC_SEQ_01</span>
+                    <h3 class="block-head">Cinematic Authority</h3>
+                    <p class="block-desc" style="color:#ddd">3D Venture Showcases and holographic displays that command immediate attention.</p>
+                </div>
+            </div>
+
+            <div class="span-6 cinema-tile" data-id="ID-02">
+                <div class="cinema-bg"></div>
+                <div class="cinema-content">
+                    <span class="mono">FOUNDER_SEQ_01</span>
+                    <h3 class="block-head">Founder Profile Management</h3>
+                    <p class="block-desc" style="color:#ddd">Managed video production and social content to build your "Personal Moat."</p>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="footer-cta">
+            <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Ready to Architect Your Future?</h2>
+            <span class="mono" style="color: #666;">// INTELOUS LABS IS REVIEWING APPLICATIONS FOR Q1 2026</span>
+            <br>
+            <a href="#" class="btn">[ INITIATE YOUR 10-WEEK SPRINT ]</a>
+            <br><br>
+            <a href="#" style="font-family: var(--font-mono); color: var(--color-text); font-size: 0.9rem; text-decoration: underline;">[ View the Build Logs ]</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

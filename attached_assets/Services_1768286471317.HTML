@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelous.ai | Service Menu</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --obsidian: #0A0A0B;
+            --charcoal: #151515;
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --data-blue: #00D1FF;
+            --neon-green: #00FF41;
+            --font-ui: 'Inter', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --container-width: 1200px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--obsidian);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-bottom: 60px; /* Space for sticky bar */
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- UTILITIES --- */
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 0 20px; }
+        .mono { font-family: var(--font-mono); }
+        .text-blue { color: var(--data-blue); }
+        .text-green { color: var(--neon-green); }
+        
+        .btn {
+            display: inline-block; padding: 12px 24px;
+            font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+            border: 1px solid var(--border); transition: all 0.3s ease;
+            background: transparent; color: var(--text-main);
+        }
+        .btn:hover { border-color: var(--neon-green); color: var(--neon-green); }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed; top: 0; width: 100%;
+            background: rgba(10, 10, 11, 0.9); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); z-index: 1000; padding: 15px 0;
+        }
+        .nav-flex { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 700; font-size: 1.2rem; letter-spacing: -0.5px; }
+
+        /* Toggle Switch */
+        .switch-container {
+            display: flex; align-items: center; background: #000;
+            border: 1px solid var(--border); border-radius: 20px;
+            padding: 2px; position: relative; width: 140px; height: 36px; cursor: pointer;
+        }
+        .switch-knob {
+            width: 50%; height: 100%; background: #222; border-radius: 18px;
+            position: absolute; top: 0; left: 0; border: 1px solid #333; transition: 0.3s;
+        }
+        .switch-labels {
+            display: flex; width: 100%; justify-content: space-between;
+            padding: 0 10px; font-size: 0.7rem; font-family: var(--font-mono); font-weight: 700; z-index: 2; pointer-events: none;
+        }
+        .switch-label.active { color: var(--text-main); }
+        .switch-label.inactive { color: #444; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            padding: 160px 0 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Pulse Animation Background */
+        .hero::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 10px; height: 10px; background: var(--neon-green);
+            border-radius: 50%; transform: translate(-50%, -50%);
+            box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7);
+            animation: pulse-ring 5s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(100); opacity: 0; }
+        }
+
+        .hero h1 { font-size: 3.5rem; letter-spacing: -0.01em; margin-bottom: 20px; font-weight: 600; }
+        .hero p { max-width: 600px; margin: 0 auto 40px; color: var(--text-muted); font-size: 1.1rem; }
+
+        /* --- CORE SERVICES (BENTO GRID) --- */
+        .services-section { padding: 80px 0; }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 Column Swiss Grid */
+            grid-auto-rows: minmax(250px, auto);
+            gap: 20px;
+        }
+
+        .service-tile {
+            position: relative;
+            background: rgba(30, 30, 30, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        /* Large tiles span 2 columns */
+        .span-2 { grid-column: span 2; }
+
+        .service-icon { font-family: var(--font-mono); font-size: 0.8rem; margin-bottom: 15px; display: block; }
+        .service-title { font-size: 1.5rem; margin-bottom: 10px; font-weight: 600; }
+        .service-desc { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* Drawing Border Animation */
+        .service-tile::before, .service-tile::after {
+            content: ''; position: absolute; background: var(--neon-green); transition: all 0.4s ease;
+        }
+        .service-tile::before { top: 0; left: 0; width: 0; height: 1px; } /* Top border */
+        .service-tile::after { bottom: 0; right: 0; width: 0; height: 1px; } /* Bottom border */
+        
+        .service-tile:hover { background: rgba(30, 30, 30, 0.7); }
+        .service-tile:hover::before { width: 100%; }
+        .service-tile:hover::after { width: 100%; }
+        
+        /* Add side borders via inner element to complete the loop */
+        .tile-inner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .tile-inner::before, .tile-inner::after {
+            content: ''; position: absolute; background: var(--neon-green); transition: all 0.4s ease;
+        }
+        .tile-inner::before { top: 0; right: 0; width: 1px; height: 0; } /* Right border */
+        .tile-inner::after { bottom: 0; left: 0; width: 1px; height: 0; } /* Left border */
+        
+        .service-tile:hover .tile-inner::before { height: 100%; }
+        .service-tile:hover .tile-inner::after { height: 100%; }
+
+        /* --- TECH BLADES (UNDER THE HOOD) --- */
+        .tech-section { padding: 80px 0; }
+        .blade {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: default;
+            transition: 0.3s;
+        }
+        .blade:hover { border-color: var(--data-blue); }
+        
+        .blade-info h3 { font-size: 1.2rem; margin-bottom: 5px; }
+        .blade-info p { color: var(--text-muted); max-width: 600px; font-size: 0.9rem; }
+        
+        .blade-tech {
+            font-family: var(--font-mono); font-size: 0.8rem; color: var(--data-blue);
+            text-align: right;
+        }
+
+        /* --- PRICING TABLE --- */
+        .pricing-section { padding: 80px 0; }
+        .pricing-table {
+            width: 100%; border-collapse: collapse;
+            font-family: var(--font-ui);
+            margin-top: 40px;
+        }
+        
+        .pricing-table th, .pricing-table td {
+            padding: 20px; text-align: left; border-bottom: 1px solid var(--border);
+        }
+        .pricing-table th { color: var(--text-muted); font-weight: 400; font-family: var(--font-mono); font-size: 0.8rem; }
+        .pricing-table td { font-size: 0.95rem; }
+        
+        .price-val { font-family: var(--font-mono); color: var(--neon-green); font-size: 1.1rem; }
+        .feature-check { color: var(--neon-green); margin-right: 5px; }
+
+        /* --- LIVE CAPACITY BAR --- */
+        .capacity-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #000; border-top: 1px solid var(--neon-green);
+            padding: 10px 0; z-index: 999;
+            display: flex; justify-content: center; align-items: center;
+            font-family: var(--font-mono); font-size: 0.8rem; color: var(--neon-green);
+        }
+        .blinking-dot {
+            width: 8px; height: 8px; background: var(--neon-green); border-radius: 50%;
+            display: inline-block; margin-right: 10px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .bento-grid { grid-template-columns: 1fr; }
+            .span-2 { grid-column: span 1; }
+            .blade { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .blade-tech { text-align: left; }
+            .pricing-table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-flex">
+            <a href="#" class="logo">Intelous.ai</a>
+            <div class="switch-container" id="serviceSwitch">
+                <div class="switch-knob" id="switchKnob"></div>
+                <div class="switch-labels">
+                    <span class="switch-label active">SCALE</span>
+                    <span class="switch-label inactive">BUILD</span>
+                </div>
+            </div>
+            <div style="width: 100px;"></div>
+        </div>
+    </header>
+
+    <section class="hero container" id="heroSection">
+        <p class="mono text-green" style="margin-bottom: 10px;">TEAM-AS-A-SERVICE</p>
+        <h1>Human Expertise.<br>Autonomous Speed.</h1>
+        <p>We replace the friction of traditional agencies and tool-sprawl with Productized Capacity. Strategic oversight meets agentic execution.</p>
+        <a href="#pricing" class="btn">View Pod Pricing</a>
+    </section>
+
+    <section class="services-section container" id="serviceGrid">
+        <div class="bento-grid">
+            <div class="service-tile span-2">
+                <div class="tile-inner"></div>
+                <span class="service-icon text-green">01 // STRATEGY</span>
+                <div>
+                    <h3 class="service-title">Fractional GTM Management</h3>
+                    <p class="service-desc">Strategic oversight that doesn't sleep. We act as your internal RevOps and Marketing department, managing everything from ICP mapping to pipeline velocity.</p>
+                </div>
+            </div>
+
+            <div class="service-tile">
+                <div class="tile-inner"></div>
+                <span class="service-icon text-green">02 // VALIDATION</span>
+                <div>
+                    <h3 class="service-title">BANT-Qualified Gen</h3>
+                    <p class="service-desc">We verify Budget, Authority, Need, and Timeline before any meeting hits your calendar.</p>
+                </div>
+            </div>
+
+            <div class="service-tile">
+                <div class="tile-inner"></div>
+                <span class="service-icon text-blue">03 // DATA</span>
+                <div>
+                    <h3 class="service-title">High-Quality Leads (HQL)</h3>
+                    <p class="service-desc">Deep enrichment of 200M+ entities. Finding the "Ground Truth" for your market.</p>
+                </div>
+            </div>
+
+            <div class="service-tile span-2">
+                <div class="tile-inner"></div>
+                <span class="service-icon text-blue">04 // ORCHESTRATION</span>
+                <div>
+                    <h3 class="service-title">Account-Based Orchestration</h3>
+                    <p class="service-desc">Omnichannel dominance. We coordinate Email, LinkedIn, and SMS touches based on real-time intent scoring.</p>
+                </div>
+            </div>
+
+             <div class="service-tile">
+                <div class="tile-inner"></div>
+                <span class="service-icon text-green">05 // AI LOGIC</span>
+                <div>
+                    <h3 class="service-title">Sentiment Analysis</h3>
+                    <p class="service-desc">We classify human intent—Positive, Neutral, or Negative—to trigger logic.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tech-section container">
+        <h2 style="margin-bottom: 40px; font-weight: 600;">Technical Under-the-Hood</h2>
+        
+        <div class="blade">
+            <div class="blade-info">
+                <h3>Domain Insurance & Warmup</h3>
+                <p>SPF/DKIM/DMARC architecture and gradual warmup to ensure 99.9% deliverability.</p>
+            </div>
+            <div class="blade-tech">
+                PROTOCOL: SMTP_SECURE<br>STATUS: ACTIVE
+            </div>
+        </div>
+
+        <div class="blade">
+            <div class="blade-info">
+                <h3>Sovereign Data Aggregation</h3>
+                <p>We query Apollo, Lusha, Clay, and Hunter simultaneously. You own the data.</p>
+            </div>
+            <div class="blade-tech">
+                API: MULTI-THREAD<br>REFRESH: 24H
+            </div>
+        </div>
+
+        <div class="blade">
+            <div class="blade-info">
+                <h3>The "Glass Box" Dashboard</h3>
+                <p>Real-time visibility into the "Engine Room". Watch agents work live.</p>
+            </div>
+            <div class="blade-tech">
+                VIEW: ADMIN<br>LATENCY: 12ms
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing-section container" id="pricing">
+        <h2 style="margin-bottom: 20px; font-weight: 600;">Managed GTM Pods</h2>
+        <table class="pricing-table">
+            <thead>
+                <tr>
+                    <th>POD TIER</th>
+                    <th>MONTHLY CAPACITY</th>
+                    <th>CORE OUTCOME</th>
+                    <th>INVESTMENT</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Launch Pod</strong></td>
+                    <td>2 AI SDRs + 1 Strategist</td>
+                    <td>Market Validation (1st 100 Mtgs)</td>
+                    <td class="price-val">$4,000/mo</td>
+                </tr>
+                <tr>
+                    <td><strong>Growth Pod</strong></td>
+                    <td>Agentic Mesh + Lead Strategist</td>
+                    <td>Predictable Pipeline</td>
+                    <td class="price-val">$8,500/mo</td>
+                </tr>
+                <tr>
+                    <td><strong>Scale Pod</strong></td>
+                    <td>Full-Stack GTM Team</td>
+                    <td>Market Dominance (ABM)</td>
+                    <td class="price-val">$15,000+/mo</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="text-align: center; margin-top: 60px;">
+            <a href="#" class="btn" style="background: var(--neon-green); color: #000; border: none;">Apply for Q1 2026 Cohort</a>
+        </div>
+    </section>
+
+    <div class="capacity-bar">
+        <span class="blinking-dot"></span>
+        SYSTEM LOAD: 80% &nbsp;|&nbsp; 2 POD SLOTS AVAILABLE FOR Q1 2026
+    </div>
+
+    <script>
+        const switchBtn = document.getElementById('serviceSwitch');
+        const knob = document.getElementById('switchKnob');
+        const hero = document.getElementById('heroSection');
+        const grid = document.getElementById('serviceGrid');
+        
+        let isBuildMode = false;
+
+        switchBtn.addEventListener('click', () => {
+            isBuildMode = !isBuildMode;
+            
+            // 1. Toggle Knob
+            if (isBuildMode) {
+                knob.style.left = '50%';
+                knob.style.background = '#fff';
+            } else {
+                knob.style.left = '0';
+                knob.style.background = '#222';
+            }
+
+            // 2. Animate Content Transition (Fade Out)
+            document.body.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                // 3. Swap Content (Simulated Logic)
+                if (isBuildMode) {
+                    hero.innerHTML = `
+                        <p class="mono" style="color:#fff; margin-bottom: 10px;">INTELOUS LABS</p>
+                        <h1>We Build Ventures.<br>From Zero to One.</h1>
+                        <p>Product strategy, UI/UX design, and full-stack development for the next generation of SaaS.</p>
+                        <a href="#" class="btn" style="border-color:#fff; color:#fff;">View Build Logs</a>
+                    `;
+                    // Change Grid Titles for Demo
+                    document.querySelectorAll('.service-title')[0].innerText = "Fractional CTO";
+                    document.querySelectorAll('.service-title')[1].innerText = "UI/UX Design Systems";
+                    document.querySelectorAll('.service-title')[2].innerText = "MVP Development";
+                    document.body.style.backgroundColor = "#111"; // Slightly lighter for Build mode
+                } else {
+                    // Reset to Scale Mode
+                    hero.innerHTML = `
+                        <p class="mono text-green" style="margin-bottom: 10px;">TEAM-AS-A-SERVICE</p>
+                        <h1>Human Expertise.<br>Autonomous Speed.</h1>
+                        <p>We replace the friction of traditional agencies and tool-sprawl with Productized Capacity. Strategic oversight meets agentic execution.</p>
+                        <a href="#pricing" class="btn">View Pod Pricing</a>
+                    `;
+                    document.querySelectorAll('.service-title')[0].innerText = "Fractional GTM Management";
+                    document.querySelectorAll('.service-title')[1].innerText = "BANT-Qualified Gen";
+                    document.querySelectorAll('.service-title')[2].innerText = "High-Quality Leads (HQL)";
+                    document.body.style.backgroundColor = "#0A0A0B";
+                }
+                
+                // 4. Fade In
+                document.body.style.opacity = '1';
+            }, 400); // Wait for fade out
+        });
+    </script>
+</body>
+</html>

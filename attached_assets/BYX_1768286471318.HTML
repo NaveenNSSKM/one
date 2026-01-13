@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BYX Studio | Cinematic Authority</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --obsidian: #050505;
+            --pink: #FF007F; /* Strategy Pink */
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --font-head: 'Archivo Black', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --container-width: 1200px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--obsidian);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+
+        /* --- UTILITIES --- */
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 0 20px; }
+        .text-pink { color: var(--pink); }
+        .brutalist-font { font-family: var(--font-head); text-transform: uppercase; }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            font-family: var(--font-body);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: 2px solid var(--pink);
+            background: transparent;
+            color: var(--pink);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            background: var(--pink);
+            color: #000;
+            box-shadow: 0 0 25px var(--pink);
+        }
+
+        /* --- HEADER (Consistent) --- */
+        header {
+            position: fixed; top: 0; width: 100%;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+        .nav-flex { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; }
+
+        /* Switch */
+        .switch-container {
+            display: flex; align-items: center; background: #000;
+            border: 1px solid #333; border-radius: 20px;
+            padding: 2px; position: relative; width: 140px; height: 36px;
+        }
+        .switch-knob {
+            width: 50%; height: 100%; background: #222; border-radius: 18px;
+            position: absolute; top: 0; left: 0; border: 1px solid #333;
+        }
+        .switch-labels {
+            display: flex; width: 100%; justify-content: space-between;
+            padding: 0 10px; font-size: 0.7rem; font-family: 'Inter', sans-serif; font-weight: 700; z-index: 2;
+        }
+        .switch-label.active { color: #fff; }
+        .switch-label.inactive { color: #444; }
+
+        /* --- HERO: THE SCREAM --- */
+        .hero {
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Abstract Video Background Simulation */
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #222, #050505);
+            z-index: -1;
+        }
+        
+        /* Animated Metallic Mesh Effect */
+        .hero-bg::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: repeating-linear-gradient(transparent, transparent 10px, rgba(255, 0, 127, 0.05) 10px, rgba(255, 0, 127, 0.05) 11px);
+            transform: rotate(45deg);
+            animation: moveMesh 20s linear infinite;
+        }
+        @keyframes moveMesh { 0% { transform: rotate(45deg) translateY(0); } 100% { transform: rotate(45deg) translateY(-100px); } }
+
+        .hero-content { z-index: 2; max-width: 900px; }
+        
+        .hero h1 {
+            font-family: var(--font-head);
+            font-size: 4.5rem;
+            line-height: 1;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            position: relative;
+            cursor: default;
+        }
+
+        /* Glitch Effect on Hover */
+        .hero h1:hover {
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: var(--pink);
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); text-shadow: -2px 2px 0px #00FFFF; }
+            20% { transform: translate(-2px, 2px); text-shadow: 2px -2px 0px #00FFFF; }
+            40% { transform: translate(-2px, -2px); text-shadow: 2px 2px 0px #00FFFF; }
+            60% { transform: translate(2px, 2px); text-shadow: -2px -2px 0px #00FFFF; }
+            80% { transform: translate(2px, -2px); text-shadow: -2px 2px 0px #00FFFF; }
+            100% { transform: translate(0); text-shadow: 2px 2px 0px #00FFFF; }
+        }
+
+        .hero-sub {
+            font-size: 1.2rem; color: var(--text-muted); margin-bottom: 40px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- THE BRIDGE: LOGIC VS MAGIC --- */
+        .bridge-section {
+            display: grid; grid-template-columns: 1fr 1fr;
+            height: 600px;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+        }
+        
+        .bridge-side {
+            padding: 60px;
+            display: flex; flex-direction: column; justify-content: center;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        /* Left: Logic (Intelous Style) */
+        .side-logic {
+            background: #080808;
+            border-right: 1px solid #333;
+        }
+        .side-logic:hover { background: #0a0a0a; }
+
+        /* Right: Magic (BYX Style) */
+        .side-magic {
+            background: #050505;
+            overflow: hidden;
+        }
+        .side-magic:hover {
+            background: radial-gradient(circle at center, rgba(255, 0, 127, 0.1), #050505);
+        }
+
+        .bridge-label {
+            font-family: var(--font-head); font-size: 1rem; color: #555; margin-bottom: 20px;
+        }
+        .bridge-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 20px; }
+        
+        .code-snippet {
+            font-family: monospace; font-size: 0.8rem; color: #00D1FF;
+            background: rgba(0,0,0,0.5); padding: 15px; border: 1px solid #333;
+        }
+        
+        .magic-visual {
+            width: 100%; height: 200px;
+            background: linear-gradient(45deg, #FF007F, #440022);
+            filter: blur(40px); opacity: 0.5;
+            transition: 0.5s;
+        }
+        .side-magic:hover .magic-visual { filter: blur(20px); opacity: 0.8; }
+
+        /* --- CINEMATIC STACK --- */
+        .stack-section { padding: 120px 0; }
+        
+        .tiles-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 60px;
+        }
+        
+        .cine-tile {
+            height: 400px;
+            position: relative;
+            background: #111;
+            overflow: hidden;
+            border: 1px solid #222;
+            transition: 0.4s;
+        }
+        
+        .cine-tile:hover {
+            border-color: var(--pink);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.3); /* Neon Glow */
+        }
+        
+        /* Simulating Image/Video Content */
+        .tile-bg {
+            width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            transition: transform 0.8s;
+        }
+        
+        /* Placeholder gradients for demo */
+        .bg-1 { background: linear-gradient(to bottom right, #222, #444); }
+        .bg-2 { background: linear-gradient(to bottom right, #111, #33001a); }
+        
+        .cine-tile:hover .tile-bg { transform: scale(1.1); }
+        
+        .tile-content {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 30px;
+            background: linear-gradient(to top, #000, transparent);
+        }
+        
+        .tile-title { font-family: var(--font-head); font-size: 1.5rem; margin-bottom: 10px; }
+        .tile-desc { font-size: 0.9rem; color: #ccc; }
+
+        /* --- SIGNAL THEORY --- */
+        .signal-section {
+            padding: 100px 0;
+            border-top: 1px solid #222;
+            text-align: center;
+        }
+        
+        .signal-box {
+            max-width: 800px; margin: 0 auto;
+        }
+        
+        .signal-text {
+            font-size: 2rem; font-weight: 600; line-height: 1.4;
+            color: #fff;
+        }
+        
+        .highlight { color: var(--pink); }
+
+        /* --- FOOTER CTA --- */
+        .final-cta {
+            padding: 120px 0;
+            text-align: center;
+            background: radial-gradient(circle at 50% 50%, rgba(20,20,20,1) 0%, rgba(5,5,5,1) 100%);
+        }
+
+        footer {
+            padding: 40px 0; border-top: 1px solid #222;
+            text-align: center; font-size: 0.8rem; color: #444;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .bridge-section { grid-template-columns: 1fr; height: auto; }
+            .tiles-grid { grid-template-columns: 1fr; }
+            .signal-text { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-flex">
+            <a href="#" class="logo">BYX STUDIO</a>
+            <div class="switch-container">
+                <div class="switch-knob"></div>
+                <div class="switch-labels">
+                    <span class="switch-label active">SCALE</span>
+                    <span class="switch-label inactive">BUILD</span>
+                </div>
+            </div>
+            <div style="width: 100px;"></div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content container">
+            <p class="brutalist-font text-pink" style="margin-bottom: 20px;">CINEMATIC AUTHORITY</p>
+            <h1>In a Noisy World,<br>You Need to Scream.</h1>
+            <p class="hero-sub">Most B2B ventures look like generic templates. BYX Studio crafts cinematic authority that signals premium status and commands immediate trust.</p>
+            <button class="btn">Explore Showreel</button>
+        </div>
+    </section>
+
+    <section class="bridge-section">
+        <div class="bridge-side side-logic">
+            <span class="bridge-label">01 // THE LOGIC (INTELOUS)</span>
+            <h3 class="bridge-title">Precision Targeting</h3>
+            <p style="color: #888; margin-bottom: 20px;">We identify the exact accounts ready to buy.</p>
+            <div class="code-snippet">
+                > TARGET: SERIES_A<br>
+                > INTENT: HIGH<br>
+                > STATUS: LOCKED
+            </div>
+        </div>
+        
+        <div class="bridge-side side-magic">
+            <span class="bridge-label text-pink">02 // THE MAGIC (BYX)</span>
+            <h3 class="bridge-title">Cinematic Impact</h3>
+            <p style="color: #888; margin-bottom: 20px;">We ensure they cannot look away.</p>
+            <div class="magic-visual"></div>
+        </div>
+    </section>
+
+    <section class="stack-section container">
+        <h2 class="brutalist-font" style="font-size: 2.5rem; margin-bottom: 20px;">The Cinematic Stack</h2>
+        <div class="tiles-grid">
+            <div class="cine-tile">
+                <div class="tile-bg bg-1"></div>
+                <div class="tile-content">
+                    <h3 class="tile-title">3D Venture Showcases</h3>
+                    <p class="tile-desc">Immersive, 3D product walkthroughs that replace boring slide decks. Make your software feel tangible.</p>
+                </div>
+            </div>
+            
+            <div class="cine-tile">
+                <div class="tile-bg bg-2"></div>
+                <div class="tile-content">
+                    <h3 class="tile-title">Holographic Ads</h3>
+                    <p class="tile-desc">High-impact visuals designed for the Attention Economy. Stop the scroll with assets designed to be shared.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="signal-section container">
+        <div class="signal-box">
+            <p class="brutalist-font" style="font-size: 0.9rem; color: #444; margin-bottom: 30px;">THE SIGNAL THEORY</p>
+            <div class="signal-text">
+                "In a world of AI-generated slop, premium visual identity is your strongest signal of <span class="highlight">Stability and Scale</span>."
+            </div>
+            <p style="color: #666; margin-top: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                High-end creative tells the market that you have the resources to invest in excellence. It is the ultimate differentiator.
+            </p>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="container">
+            <h2 class="brutalist-font" style="font-size: 3rem; margin-bottom: 20px;">Don't Be Ignored.</h2>
+            <p style="color: #888; margin-bottom: 40px;">BYX Studio is available exclusively to Intelous GTM partners.</p>
+            <button class="btn">Request Creative Audit</button>
+            <div style="margin-top: 20px;">
+                <a href="#" style="font-size: 0.8rem; color: #444; border-bottom: 1px solid #444;">View Build Logs</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            BYX STUDIO © 2026. A DIVISION OF INTELOUS.
+        </div>
+    </footer>
+
+</body>
+</html>

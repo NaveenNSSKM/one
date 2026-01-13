@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelous.ai | Sovereign GTM Engine</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --obsidian: #050505;
+            --charcoal: #111111;
+            --border: #2a2a2a;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --cyan: #00F0FF;
+            --neon-green: #00FF41;
+            --font-ui: 'Inter', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --container-width: 1200px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--obsidian);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- UTILITIES --- */
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .mono { font-family: var(--font-mono); }
+        .text-cyan { color: var(--cyan); }
+        .text-green { color: var(--neon-green); }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+        
+        .btn-primary:hover {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--text-main);
+        }
+
+        /* --- I. HEADER & NAV --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .nav-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.5px;
+            transition: color 0.3s;
+        }
+        
+        .logo:hover {
+            color: var(--cyan);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .nav-links a:hover { color: var(--text-main); }
+
+        /* The 3D Switch */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2px;
+            position: relative;
+            width: 140px;
+            height: 36px;
+            cursor: pointer;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        .switch-knob {
+            width: 50%;
+            height: 100%;
+            background: #222;
+            border-radius: 18px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            z-index: 1;
+        }
+        
+        .switch-labels {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .switch-label { width: 50%; text-align: center; line-height: 32px; }
+        .switch-label.active { color: var(--text-main); }
+        .switch-label.inactive { color: #444; }
+
+        /* --- II. HERO SECTION --- */
+        .hero {
+            padding: 160px 0 100px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Mesh Background Effect (simplified with radial gradient) */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(0,240,255,0.05) 0%, rgba(5,5,5,0) 70%);
+            z-index: -1;
+        }
+
+        .hero-headline {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .trust-bar {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #444;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        /* Terminal Window */
+        .terminal {
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--neon-green);
+            height: 400px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #333; }
+        
+        .log-entry { margin-bottom: 10px; opacity: 0; animation: fadeIn 0.5s forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* --- III. PROBLEM SECTION --- */
+        .problem-section {
+            padding: 100px 0;
+            border-top: 1px solid var(--border);
+        }
+        
+        .section-header { margin-bottom: 60px; }
+        .section-title { font-size: 2rem; margin-bottom: 10px; }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--charcoal);
+            border: 1px solid var(--border);
+            padding: 30px;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover { transform: translateY(-5px); border-color: #444; }
+        
+        .card-header {
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        
+        .card h3 { font-size: 1.4rem; margin-bottom: 15px; }
+        .card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .card.highlight { border: 1px solid var(--cyan); background: rgba(0, 240, 255, 0.02); }
+
+        /* --- IV. PRODUCT SECTION (BENTO) --- */
+        .product-section { padding: 100px 0; }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .bento-card {
+            background: #0d0d0d;
+            border: 1px solid var(--border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 350px;
+        }
+        
+        .bento-card:hover { border-color: var(--neon-green); }
+        
+        .price {
+            font-family: var(--font-mono);
+            color: var(--neon-green);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .features-list {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .features-list li { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .features-list li::before { content: '>'; color: var(--neon-green); }
+
+        /* --- V. TECHNOLOGY (LAYERS) --- */
+        .tech-section { padding: 100px 0; text-align: center; }
+        
+        .layers-container {
+            position: relative;
+            max-width: 800px;
+            margin: 60px auto;
+        }
+        
+        .layer {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-bottom: -10px; /* Overlap */
+            position: relative;
+            transition: all 0.4s;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+        }
+        
+        .layer:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: var(--cyan);
+            z-index: 10;
+            background: #111;
+        }
+        
+        .layer h4 { font-family: var(--font-mono); margin-bottom: 5px; color: var(--cyan); }
+
+        /* --- VI. PROCESS (TIMELINE) --- */
+        .process-section { padding: 100px 0; border-top: 1px solid var(--border); }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            position: relative;
+        }
+        
+        /* Line connecting dots */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #333;
+            z-index: 0;
+        }
+
+        .time-step {
+            position: relative;
+            width: 23%;
+            z-index: 1;
+        }
+        
+        .time-dot {
+            width: 30px;
+            height: 30px;
+            background: var(--obsidian);
+            border: 1px solid var(--cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--cyan);
+            margin-bottom: 20px;
+        }
+        
+        .time-content h4 { margin-bottom: 10px; }
+        .time-content p { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* --- VII. FAQ --- */
+        .faq-section { padding: 100px 0; max-width: 800px; margin: 0 auto; }
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+        }
+        .faq-q { font-weight: 600; margin-bottom: 10px; display: block; }
+        .faq-a { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* --- VIII. FINAL CTA --- */
+        .final-cta {
+            padding: 100px 0;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(30,30,30,0.5) 0%, var(--obsidian) 70%);
+        }
+        
+        .application-box {
+            border: 1px solid var(--border);
+            display: inline-block;
+            padding: 40px 60px;
+            background: #0a0a0a;
+        }
+
+        /* --- IX. FOOTER --- */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: #555;
+        }
+        
+        .footer-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links a { margin: 0 10px; }
+        .footer-links a:hover { color: var(--cyan); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; padding-top: 120px; text-align: center; }
+            .hero-headline { font-size: 2.5rem; }
+            .terminal { display: none; } /* Hide terminal on mobile for cleanliness */
+            .bento-grid { grid-template-columns: 1fr; }
+            .timeline { flex-direction: column; gap: 30px; }
+            .timeline::before { display: none; }
+            .time-step { width: 100%; text-align: center; }
+            .time-dot { margin: 0 auto 10px auto; }
+            .cta-group { justify-content: center; }
+            .nav-links { display: none; } /* Simplified mobile nav would go here */
+            .footer-flex { flex-direction: column; gap: 20px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-flex">
+            <a href="#" class="logo">Intelous.ai</a>
+            
+            <div class="switch-container" id="navSwitch">
+                <div class="switch-knob" id="switchKnob"></div>
+                <div class="switch-labels">
+                    <span class="switch-label active">SCALE</span>
+                    <span class="switch-label inactive">BUILD</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="#">Managed Pods</a>
+                <a href="#">Discovery Hub</a>
+                <a href="#">Intelous OS</a>
+                <a href="#">Pricing</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero container">
+        <div class="hero-content">
+            <h1 class="hero-headline">Stop Hiring Heads.<br><span class="text-cyan">Deploy a Sovereign GTM Engine.</span></h1>
+            <p class="hero-sub">Most ventures fail in the 6-month execution gap. You don’t need more billable hours. You need Productized Capacity.</p>
+            
+            <div class="cta-group">
+                <a href="#" class="btn btn-primary">Initiate 10-Week Sprint</a>
+                <a href="#" class="btn btn-secondary">▶ Watch Logic</a>
+            </div>
+
+            <div class="trust-bar">
+                POWERING SOVEREIGN GROWTH FOR: [LOGO] [LOGO] [LOGO]
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="dot" style="background:#ff5f56"></div>
+                <div class="dot" style="background:#ffbd2e"></div>
+                <div class="dot" style="background:#27c93f"></div>
+            </div>
+            <div id="terminal-content">
+                <div class="log-entry">> INTELOUS_OS: INITIALIZING...</div>
+                <div class="log-entry" style="animation-delay: 0.5s;">> CONNECTING: Apollo, Clay, Lusha... [OK]</div>
+                <div class="log-entry" style="animation-delay: 1.0s;">> TARGETING: 200M+ ENTITIES FOUND</div>
+                <div class="log-entry" style="animation-delay: 1.5s;">> FILTER: SERIES A // B2B SAAS // $50M REV</div>
+                <div class="log-entry" style="animation-delay: 2.0s;">> AGENT: VERIFYING EMAILS...</div>
+                <div class="log-entry" style="animation-delay: 2.5s;">> STATUS: 42 LEADS ENRICHED</div>
+                <div class="log-entry" style="animation-delay: 3.0s;">> EXECUTION: SEQUENCE ALPHA STARTED...</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="problem-section container">
+        <div class="section-header">
+            <p class="mono text-cyan">THE PROBLEM</p>
+            <h2 class="section-title">The Crisis of Execution</h2>
+        </div>
+        <div class="problem-grid">
+            <div class="card">
+                <div class="card-header">01 // The Agency Trap</div>
+                <h3>Great strategy, but humans sleep.</h3>
+                <p>Agencies prioritize billable hours over velocity. You lose 6 months and $45k just to realize they can't scale your logic.</p>
+            </div>
+            <div class="card">
+                <div class="card-header">02 // The Tool Paradox</div>
+                <h3>Powerful software, zero implementation.</h3>
+                <p>Buying Clay or 6sense is easy. Finding someone with a PhD to operate them is hard. It becomes "Shelf-ware" in 90 days.</p>
+            </div>
+            <div class="card highlight">
+                <div class="card-header text-cyan">03 // THE INTELOUS WAY</div>
+                <h3 class="text-cyan">Sovereign Systems.</h3>
+                <p>You own the data, the agents, and the infrastructure. We operate until you’re ready to captain the ship.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="product-section container">
+        <div class="section-header">
+            <p class="mono text-green">MANAGED PODS</p>
+            <h2 class="section-title">Fractional Elite Teams.<br>Autonomous Execution.</h2>
+        </div>
+        
+        <div class="bento-grid">
+            <div class="bento-card">
+                <div>
+                    <span class="price">$4,000/mo</span>
+                    <h3>The Launch Pod</h3>
+                    <p class="mono" style="font-size:0.8rem; color:#666;">FOCUS: MARKET VALIDATION</p>
+                    <ul class="features-list">
+                        <li>1 Human Strategist</li>
+                        <li>2 AI SDRs</li>
+                        <li>Full Campaign Setup</li>
+                        <li>1st 100 Meetings</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bento-card" style="border-color: var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);">
+                <div>
+                    <span class="price">$8,500/mo</span>
+                    <h3>The Growth Pod</h3>
+                    <p class="mono" style="font-size:0.8rem; color:#666;">FOCUS: PREDICTABLE PIPELINE</p>
+                    <ul class="features-list">
+                        <li>1 Lead Strategist</li>
+                        <li>1 Content Specialist</li>
+                        <li>Agentic Mesh</li>
+                        <li>Multi-channel (Email, LI, Voice)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bento-card">
+                <div>
+                    <span class="price">$15,000+/mo</span>
+                    <h3>The Scale Pod</h3>
+                    <p class="mono" style="font-size:0.8rem; color:#666;">FOCUS: TOTAL DOMINANCE</p>
+                    <ul class="features-list">
+                        <li>Full-stack GTM Team</li>
+                        <li>Custom LLM Training</li>
+                        <li>Intent-based ABM</li>
+                        <li>Automated Sales Ops</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tech-section container">
+        <h2 class="section-title">Inside the "Glass Box"</h2>
+        <div class="layers-container">
+            <div class="layer">
+                <h4>LAYER 1: The Sovereign Aggregator</h4>
+                <p>We query Apollo, Lusha, Clay, and Hunter simultaneously. 200M+ entities, refreshed daily.</p>
+            </div>
+            <div class="layer">
+                <h4>LAYER 2: The Clean Room</h4>
+                <p>HITL Governance. Every lead verified for MX records and BANT signals before sending.</p>
+            </div>
+            <div class="layer">
+                <h4>LAYER 3: The Sentiment Brain</h4>
+                <p>We don't track clicks; we track Intent. AI identifies "Positive/Neutral/Negative" for perfect follow-ups.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="process-section container">
+        <h2 class="section-title">The "Anti-Failure" Process</h2>
+        <div class="timeline">
+            <div class="time-step">
+                <div class="time-dot">01</div>
+                <div class="time-content">
+                    <h4>Strategic PRD</h4>
+                    <p>Week 1-2: We define the "Ground Truth" of your market and ICP.</p>
+                </div>
+            </div>
+            <div class="time-step">
+                <div class="time-dot">02</div>
+                <div class="time-content">
+                    <h4>Deployment</h4>
+                    <p>Week 3-4: Configure your Sovereign OS and warm your domains.</p>
+                </div>
+            </div>
+            <div class="time-step">
+                <div class="time-dot">03</div>
+                <div class="time-content">
+                    <h4>Execution</h4>
+                    <p>Week 5-8: Our Pod generates meetings. We refine based on sentiment.</p>
+                </div>
+            </div>
+            <div class="time-step">
+                <div class="time-dot">04</div>
+                <div class="time-content">
+                    <h4>The Transfer</h4>
+                    <p>Week 9-10: We hand you the keys to a humming growth engine.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section container">
+        <h2 class="section-title" style="margin-bottom: 40px; text-align: center;">FAQ</h2>
+        
+        <div class="faq-item">
+            <span class="faq-q">Do I own the data?</span>
+            <p class="faq-a">Yes. Unlike agencies, everything we build belongs to you from Day 1.</p>
+        </div>
+        <div class="faq-item">
+            <span class="faq-q">How is this better than an SDR?</span>
+            <p class="faq-a">An SDR takes 4 months to ramp. Our Pod starts executing in 48 hours and never sleeps.</p>
+        </div>
+        <div class="faq-item">
+            <span class="faq-q">What is 'Sovereignty'?</span>
+            <p class="faq-a">It means you are no longer a hostage to external vendors. You own the revenue infrastructure.</p>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="container">
+            <div class="application-box">
+                <p class="mono text-cyan" style="margin-bottom: 10px;">LIMITED CAPACITY</p>
+                <h2 style="margin-bottom: 20px;">We only accept 5 partners per quarter.</h2>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">Apply for our Q1 2026 Cohort to secure your "Third Option."</p>
+                <a href="#" class="btn btn-primary">Apply for the Diagnostic</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="container">
+        <div class="footer-flex">
+            <div>2026 INTELOUS. ALL SYSTEMS OPERATIONAL.</div>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Success Stories</a>
+                <a href="#">Careers</a>
+                <a href="#">Terms</a>
+            </div>
+            <div>
+                [LI] [X] [GH]
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle Switch Logic
+        const navSwitch = document.getElementById('navSwitch');
+        const switchKnob = document.getElementById('switchKnob');
+        let isBuildMode = false;
+
+        navSwitch.addEventListener('click', () => {
+            isBuildMode = !isBuildMode;
+            
+            if (isBuildMode) {
+                // Move Knob Right
+                switchKnob.style.left = '50%';
+                switchKnob.style.background = '#fff'; // White for Build Mode
+                document.body.style.opacity = '0.5'; // Visual feedback before redirect
+                
+                setTimeout(() => {
+                   // In a real scenario: window.location.href = "https://labs.intelous.ai";
+                   alert("Redirecting to Intelous Labs (Build Mode)...");
+                   // Reset for demo purposes
+                   document.body.style.opacity = '1';
+                   switchKnob.style.left = '0';
+                   switchKnob.style.background = '#222';
+                   isBuildMode = false;
+                }, 500);
+            } else {
+                switchKnob.style.left = '0';
+                switchKnob.style.background = '#222';
+            }
+        });
+    </script>
+</body>
+</html>
