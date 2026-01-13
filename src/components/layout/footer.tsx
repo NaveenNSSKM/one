@@ -58,7 +58,7 @@ export function Footer() {
             <h4 className="font-medium text-sm mb-4">Contact</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>hello@intelous.ai</li>
-              <li>San Francisco, CA</li>
+              <li>San Francisco, CS</li>
             </ul>
           </div>
         </div>
