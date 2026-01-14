@@ -69,9 +69,7 @@ export function Header() {
               onClick={() => {
                 const newMode = mode === "scale" ? "build" : "scale";
                 setMode(newMode);
-                if (pathname !== "/") {
-                  router.push("/");
-                }
+                router.push("/");
               }}
               data-testid="button-mode-toggle"
             >
